@@ -1,0 +1,23 @@
+{% extends 'layout/basic.html' %}
+{% load bootstrap4 %}
+
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-3">
+                {% if user.is_autenticated %}
+                    Вы уже выполнили ваход!
+                {% else %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {% bootstrap_form form layout='inline' form_group_class='form-group' size='small' %}
+                        {% bootstrap_button button_class='btn btn-block btn-info btn-center m-auto' content='Войти' %}
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

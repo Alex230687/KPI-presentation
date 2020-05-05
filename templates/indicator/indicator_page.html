@@ -1,0 +1,141 @@
+{% extends 'layout/basic.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load humanize %}
+{% load sub_tags %}
+
+
+{% block title %}Таблица показателя{% endblock %}
+
+{% block link %}
+    <link rel="stylesheet" type="text/css" href="{% static 'indicator/indicator_table.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="col-2">
+                <form method="post" class="col-10 m-auto align-center">
+                    {% csrf_token %}
+                    {% bootstrap_form form layout='inline' form_group_class='form-group'  size='small' %}
+                    {% bootstrap_button button_class='btn btn-block btn-info btn-center m-auto' content='Сформировать' %}
+                </form>
+                <div data-content="group-button" class="dropdown">
+                    <button data-content="main-button" class="btn btn-teal btn-block btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Уровень группировки
+                    </button>
+                    <div data-content="dropdown-row" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <button data-content="btn-group1" class="dropdown-item" type="button">Уровень 1</button>
+                        <button data-content="btn-group2" class="dropdown-item" type="button">Уровень 2</button>
+                        <button data-content="btn-group3" class="dropdown-item" type="button">Уровень 3</button>
+                        <button data-content="btn-group4" class="dropdown-item" type="button">Уровень 4</button>
+                    </div>
+                </div>
+                <div data-content="budget-button" class="dropdown">
+                    <button data-content="main-button" class="btn btn-teal btn-block btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Отображение бюджета
+                    </button>
+                    <div data-content="dropdown-row" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <button data-content="btn-budget-on" class="dropdown-item" type="button">Показать бюджет</button>
+                        <button data-content="btn-budget-off" class="dropdown-item" type="button">Скрыть бюджет</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-10">
+                <table data-period="{% if kwargs %}{{ kwargs|item:"period"|date:"n" }}{% endif %}" class="table table-sm table-hover">
+                    <thead>
+                    {% if table %}
+                    <tr data-firstlast="first" class="bg-light">
+                        <td data-column="title">Период</td>
+                        <td data-column="value" data-month="1" class="text-center">Январь</td>
+                        <td data-column="value" data-month="2" class="text-center">Февраль</td>
+                        <td data-column="value" data-month="3" class="text-center">Март</td>
+                        <td data-column="value" data-month="4" class="text-center">Апрель</td>
+                        <td data-column="value" data-month="5" class="text-center">Май</td>
+                        <td data-column="value" data-month="6" class="text-center">Июнь</td>
+                        <td data-column="value" data-month="7" class="text-center">Июль</td>
+                        <td data-column="value" data-month="8" class="text-center">Август</td>
+                        <td data-column="value" data-month="9" class="text-center">Сентябрь</td>
+                        <td data-column="value" data-month="10" class="text-center">Октябрь</td>
+                        <td data-column="value" data-month="11" class="text-center">Ноябрь</td>
+                        <td data-column="value" data-month="12" class="text-center">Декбарь</td>
+                    </tr>
+                    {% endif %}
+                    {% if table %}
+                        <tr>
+                            <td>Выполнение</td>
+                            {% for cell in implementation %}
+                                <td class="text-center">{{ cell|percent }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr data-content="empty">
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td>
+                        </tr>
+                    {% endif %}
+                    </thead>
+                    <tbody>
+                    {% if table %}
+                        <tr data-block="indicator" class="bg-success">
+                            <td data-block="name-cell" class="text-left">{{ info|item:"name" }}</td>
+                            {% for cell in indicator|item:"Actual"|item:"value" %}
+                                <td data-value="{{ value }}" data-block="value-cell" data-content="value" class="text-right">
+                                    {% if info|item:"indicator_group__name" == 'percent' %}
+                                        {{ cell|percent:1 }}
+                                    {% elif info|item:"indicator_group__name" == 'turnover' %}
+                                        {{ cell|turnover }}
+                                    {% else %}
+                                        {{ cell|floatformat:0|intcomma }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        <tr data-block="indicator" class="bg-warning">
+                            <td data-block="name-cell" class="text-left">Цель</td>
+                            {% for cell in indicator|item:"Budget"|item:"value" %}
+                                <td data-value="{{ value }}" data-block="value-cell" data-content="value" class="text-right">
+                                    {% if info|item:"indicator_group__name" == 'percent' %}
+                                        {{ cell|percent:1 }}
+                                    {% elif info|item:"indicator_group__name" == 'turnover' %}
+                                        {{ cell|turnover }}
+                                    {% else %}
+                                        {{ cell|floatformat:0|intcomma }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        <tr data-content="empty">
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td>
+                        </tr>
+                        {% for row in table.values %}
+                            <tr data-datatype="actual" data-block="value-row" data-position="0" data-group1="{{ row|item:"Actual"|item:"row__row_group1__name" }}" data-group2="{{ row|item:"Actual"|item:"row__row_group2__name" }}" data-group3="{{ row|item:"Actual"|item:"row__row_group3__name" }}">
+                                <td data-block="name-cell" class="text-left">{{ row|item:"Actual"|item:"row__name" }}</td>
+                                {% for value in row|item:"Actual"|item:"value" %}
+                                    <td data-value="{{ value }}" data-block="value-cell" data-content="value" class="text-right">{{ value|floatformat:0|intcomma }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr data-datatype="budget" data-block="value-row"  data-position="0" data-group1="{{ row|item:"Budget"|item:"row__row_group1__name" }}" data-group2="{{ row|item:"Budget"|item:"row__row_group2__name" }}" data-group3="{{ row|item:"Budget"|item:"row__row_group3__name" }}">
+                                <td data-block="name-cell" class="text-left">Бюджет</td>
+                                {% for value in row|item:"Budget"|item:"value" %}
+                                    <td data-value="{{ value }}" data-block="value-cell"  data-content="value" class="text-right">{{ value|floatformat:0|intcomma }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        <tr data-firstlast="last" data-content="empty">
+                            <td class="p-0"></td><td class="p-0"></td><td class="p-0"></td>
+                            <td class="p-0"></td><td class="p-0"></td><td class="p-0"></td>
+                            <td class="p-0"></td><td class="p-0"></td><td class="p-0"></td>
+                            <td class="p-0"></td><td class="p-0"></td><td class="p-0"></td>
+                            <td class="p-0"></td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'indicator/indicator_table.js' %}"></script>
+    <script src="{% static 'indicator/row_grouping.js' %}"></script>
+    <script src="{% static 'indicator/current_month.js' %}"></script>
+{% endblock %}

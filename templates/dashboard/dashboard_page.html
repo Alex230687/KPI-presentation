@@ -1,0 +1,124 @@
+{% extends 'layout/basic.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% load humanize %}
+{% load sub_tags %}
+
+
+{% block link %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard/dash.css' %}">
+{% endblock %}
+
+{% block title %}Сводная страница{% endblock %}
+
+{% block content %}
+    <div class="container justify-content-center">
+        <div data-content="dash-manager" class="row text-center justify-content-center mr-auto ml-auto">
+            <div data-value="manager" class="col">Менеджер: <span>{{ current_user.first_name }} {{ current_user.middle_name }}</span></div>
+            <div data-value="period" class="col">Текущий период: <span>{{ current_period }}</span></div>
+        </div>
+        <div data-content="dash-total-bonus" class="row text-center justify-content-center m-auto">
+            <div data-value="cons-scale-bonus" class="col">Текущее общее выполнение КПЭ: <span></span></div>
+        </div>
+        <div data-content="dash-title" class="row text-center bg-light justify-content-center m-auto">
+            <div class="col-3">Показатель</div>
+            <div class="col-2">Факт</div>
+            <div class="col-2">Цель</div>
+            <div class="col-1">%%</div>
+            <div class="col-1">Бонус</div>
+            <div class="col-3">Шкала</div>
+        </div>
+        {% for indicator in dash_data.values %}
+            {% if indicator|item:"info"|item:"id" != 28 %}
+                <div data-content="dash-info" class="row text-center bg-white text-dark justify-content-center m-auto border border-dark">
+                    <div data-cell="indicator-name" data-group="{{ indicator|item:"info"|item:"indicator_group__name" }}" data-effect="{{ indicator|item:"info"|item:"indicator_effect__name" }}" class="col-3">{{ indicator|item:"info"|item:"name" }}</div>
+                    {% if indicator|item:"info"|item:"indicator_group__name" == 'percent' %}
+                        <div class="col-2">{{ indicator|item:"dash"|item:"Actual"|percent:2 }}</div>
+                        <div class="col-2">{{ indicator|item:"dash"|item:"Budget"|percent:2 }}</div>
+                    {% elif indicator|item:"info"|item:"indicator_group__name" == 'turnover' %}
+                        <div class="col-2">{{ indicator|item:"dash"|item:"Actual"|turnover }}</div>
+                        <div class="col-2">{{ indicator|item:"dash"|item:"Budget"|turnover }}</div>
+                    {% else %}
+                        <div class="col-2">{{ indicator|item:"dash"|item:"Actual"|floatformat:0|intcomma }}</div>
+                        <div class="col-2">{{ indicator|item:"dash"|item:"Budget"|floatformat:0|intcomma }}</div>
+                    {% endif %}
+                    <div data-cell="implementation-cell" data-amount="{{ indicator|item:"dash"|item:"Implementation" }}" class="col-1">{{ indicator|item:"dash"|item:"Implementation"|percent:2 }}</div>
+                    <div data-cell="bonus-share" class="col-1"></div>
+                    <div data-content="detail-button" class="col-3">
+                        <button data-content="detail-button" type="button" class="btn btn-block">Показать шкалу</button>
+                    </div>
+                </div>
+                <div data-content="dash-scale" class="row bg-light text-dark m-auto">
+                    <div class="col-12 p-0">
+                        <div class="row align-items-center m-0 h-100">
+                            <div class="col-6">
+                                <div data-block="link-share" class="row m-0">
+                                    <div data-line="indicator-link-button" class="col-6 text-center"><a href="{% url 'indicator:indicator' indicator|item:"info"|item:"indicator_group__name" indicator|item:"info"|item:"id" %}">Страница показателя</a></div>
+                                    <div data-line="indicator-share" class="col-6 text-center">Доля бонуса <span>{{ indicator|item:"scale"|index:0|item:"bonus_share"|percent:0 }}</span></div>
+                                </div>
+                                <div class="row m-0 align-items-center">
+                                    <div data-block="dash-scale" class="col-12">
+                                        <div data-block="scale-info" class="row m-0">
+                                            <div data-line="min-info-wrapper" class="col-12 p-0 border border-light h-100">
+                                                <div data-line="min-info" class="border-right border-danger text-right text-danger">
+                                                    Минимум:  <span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div data-block="scale-line" class="row p-0 m-0">
+                                            <div data-line="empty-line" class="col-12 p-0 border border-dark h-100 position-relative rounded">
+                                                <div data-line="target-line" class="col-12 p-0 border-right border-dark position-absolute"></div>
+                                                <div data-line="min-line" class="col-12 p-0 border-right border-dark position-absolute"></div>
+                                                <div data-line="imp-line" class="col-12 p-0 position-absolute"></div>
+                                            </div>
+                                        </div>
+                                        <div data-block="scale-info" class="row m-0">
+                                            <div data-line="max-info-wrapper" class="col-12 p-0 border border-light h-100 justify-content-left">
+                                                <div data-line="max-info" class="border-right border-success text-right text-success">
+                                                    Цель:  <span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 m-auto">
+                                <div class="row align-items-center justify-content-center">
+                                    <table data-content="scale-table" class="table table-sm m-auto">
+                                        <thead>
+                                            <tr>
+                                                <td data-value="target" class="text-center border border-dark">Цель</td>
+                                                <td data-value="percent-min" class="text-center border border-dark">Шкала</td>
+                                                <td data-value="percent-max" class="text-center">Шкала Скрыть</td>
+                                                <td data-value="bonus-min" class="text-center border border-dark">Бонус</td>
+                                                <td data-value="bonus-max" class="text-center">Бонус Скрыть</td>
+                                                <td data-value="bonus-share" class="text-center"></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for scale_row in indicator|item:"scale" %}
+                                            <tr data-position="{{ scale_row|item:"row_position" }}">
+                                                <td data-value="target" data-amount="{{ indicator|item:"dash"|item:"Budget" }}" class="border border-dark p-0"><span data-span="value"></span><span data-span="index"></span></td>
+                                                <td data-value="percent-min" data-amount="{{ scale_row|item:"percent_min" }}" class="border border-dark p-0">{{ scale_row|item:"percent_min"|percent:2 }}</td>
+                                                <td data-value="percent-max" data-amount="{{ scale_row|item:"percent_max" }}" data-visible="hide" class="p-0">{{ scale_row|item:"percent_max"|percent:2 }}</td>
+                                                <td data-value="bonus-min" data-amount="{{ scale_row|item:"bonus_min" }}" class="border border-dark p-0">{{ scale_row|item:"bonus_min"|percent:2 }}</td>
+                                                <td data-value="bonus-max" data-amount="{{ scale_row|item:"bonus_max" }}" data-visible="hide" class="p-0">{{ scale_row|item:"bonus_max"|percent:2 }}</td>
+                                                <td data-value="bonus-share" class="p-0"></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <script src="{% static 'dashboard/dash_scale.js' %}"></script>
+    <script src="{% static 'dashboard/dash_table.js' %}"></script>
+    <script src="{% static 'dashboard/dash_total.js' %}"></script>
+    <script src="{% static 'dashboard/dash_accordion.js' %}"></script>
+    <script src="{% static 'dashboard/dash_minmax.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,84 @@
+div[data-content='group-button'],
+div[data-content='budget-button']{
+    width: 75%;
+}
+
+div[data-content='group-button'] {
+    margin: 50px auto auto auto;
+}
+
+div[data-content='budget-button'] {
+    margin: 15px auto auto auto;
+}
+
+button[data-content='main-button'] {
+    font-size: 13px;
+}
+
+
+div[data-content='dropdown-row'] {
+    width: 100%;
+}
+
+td[data-column="title"] {
+    width: 15%;
+}
+
+td[data-column="value"] {
+    width: 7%;
+}
+
+td[data-content='value'] {
+    padding-right: 11px;
+}
+
+tr[data-position='3'][data-datatype='actual'] {
+    background-color: #c6e0b4;
+}
+
+tr[data-position='2'][data-datatype='actual'] {
+    background-color: #fff2cc;
+}
+
+tr[data-position='1'][data-datatype='actual'] {
+    background-color: #ffffcc;
+}
+
+tr[data-position='0'][data-datatype='actual'] {
+    background-color: #f2f2f2;
+}
+
+tr[data-datatype='actual'] td {
+    border-bottom-width: 0;
+}
+
+tr[data-datatype='budget'] td {
+    border-top-width: 0;
+    color: gray;
+}
+
+table.table tr td {
+    border: 1px solid #000000;
+    font-size: 11px;
+}
+
+table.table tr[data-content='empty'] td {
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+
+table.table tr[data-datatype='budget'],
+table.table tr[data-position='0'][data-datatype='actual'],
+table.table tr[data-position='1'][data-datatype='actual'],
+table.table tr[data-position='2'][data-datatype='actual'] {
+    display: none;
+}
+
+/*table.table tr[data-firstlast='last'] {*/
+/*    height: 0px;*/
+/*}*/
+
+table.table tr[data-firstlast='last'] td {
+    border-color: transparent;
+}

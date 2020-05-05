@@ -1,0 +1,43 @@
+{% extends 'layout/basic.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" type="text/css" href="{% static 'main/main_page.css' %}">
+{% endblock %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+    <div data-content="data-container" class="container">
+        <div data-content="info" class="row justify-content-center">
+            <div class="col-12 text-center"><h1 class="page-header">Пезентационная версия для GitHub</h1></div>
+        </div>
+        <div data-content="button-row" class="row justify-content-center">
+            <div class="col-4 h-100">
+                <div class="dropdown p-auto h-100">
+                    <button class="btn h-100 btn-block btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Сводная информация по КПЭ
+                    </button>
+                    <div data-content="dropdown-row" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{% url 'dashboard:dash' user.id %}">Сводная страница</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 h-100">
+                <div class="dropdown p-auto h-100">
+                    <button class="btn h-100 btn-block btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Персональные КПЭ
+                    </button>
+                    <div data-content="dropdown-row" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% if indicator_info %}
+                            {% for indicator in indicator_info %}
+                                <a class="dropdown-item" href="{% url 'indicator:indicator' indicator.slag indicator.id %}">{{ indicator.name }}</a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

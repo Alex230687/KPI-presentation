@@ -1,0 +1,51 @@
+{% load static %}
+{% load humanize %}
+{% load bootstrap4 %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    <link rel="stylesheet" href="{% static 'main/basic.css' %}">
+    {% block link %}{% endblock %}
+    <title>{% block title %}Главная{% endblock %}</title>
+</head>
+<body class="container-fluid">
+    <!--NAVBAR BLOCK-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <nav class="navbar navbar-expand-lg navbar-dark bg-info text-dark">
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav">
+                            {% if user.is_authenticated %}
+                                <li class="nav-item active"><a class="nav-link" href="{% url 'main:main' %}">Главная<span class="sr-only">(current)</span></a></li>
+                                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Персональные КПЭ</a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        {% if indicator_info %}
+                                            {% for indicator in indicator_info %}
+                                                <a class="dropdown-item" href="{% url 'indicator:indicator' indicator.slag indicator.pk %}">{{ indicator.name }}</a>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <ul class="navbar-nav col-2 justify-content-end">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'main:logout' %}">Выход</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'main:login' %}">Вход</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div><!-- NAVBAR END -->
+    {% block content %}{% endblock %}
+</body>
+</html>

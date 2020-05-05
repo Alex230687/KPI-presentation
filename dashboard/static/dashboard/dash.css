@@ -1,0 +1,151 @@
+div[data-content="dash-manager"],
+div[data-content="dash-total-bonus"] {
+    height: 50px;
+    line-height: 50px;
+    font-size: 17px;
+}
+
+div[data-content="dash-manager"] span,
+div[data-content="dash-total-bonus"] span {
+    font-weight: bold;
+}
+
+div[data-content="dash-manager"] {
+    width: 80%;
+    margin-top: 25px;
+}
+
+div[data-content="dash-title"],
+div[data-content="dash-info"] {
+    width: 80%;
+    height: 42px;
+    line-height: 40px;
+    font-size: 13px;
+}
+
+button[data-content='detail-button'] {
+    width: 80%;
+    height: 30px;
+    margin: 5px auto 5px auto;
+    font-size: 13px;
+    padding: 3px;
+    line-height: 22px;
+}
+
+div[data-block="link-share"] {
+    height: 55px;
+    line-height: 55px;
+}
+
+div[data-content="dash-scale"] {
+    width: 80%;
+    height: 215px;
+    /*border-top-width: 0px !important;*/
+}
+
+div[data-block="scale-line"],
+div[data-block="scale-info"] {
+    height: 44px;
+}
+
+div[data-line="min-info-wrapper"],
+div[data-line="max-info-wrapper"],
+div[data-line="empty-line"] {
+    height: 40px;
+    border-width: 2px !important;
+}
+
+div[data-line="min-info-wrapper"] {
+    border-bottom-width: 0 !important;
+}
+
+div[data-line="max-info-wrapper"] {
+    border-top-width: 0 !important;
+}
+
+
+
+/*div[data-block="scale-info"] {*/
+/*    */
+/*}*/
+
+div[data-line="imp-line"],
+div[data-line="min-line"],
+div[data-line="target-line"],
+div[data-line="min-info"],
+div[data-line="max-info"] {
+    height: 100%;
+    border-width: 2px !important;
+}
+
+div[data-line="min-info"],
+div[data-line="max-info"] {
+    padding-right: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 40px;
+}
+
+div[data-line="imp-line"] {
+    z-index: 1;
+}
+
+div[data-line="target-line"] {
+    z-index: 2;
+    background-color: transparent;
+}
+
+div[data-line="min-line"] {
+    z-index: 3;
+    background-color: transparent;
+}
+
+table[data-content="scale-table"] {
+    font-size: 11px;
+    width: 80%;
+}
+
+td[data-value="target"],
+td[data-value="bonus-min"],
+td[data-value="bonus-share"],
+td[data-value="percent-min"] {
+    width: 25%;
+    text-align: center;
+}
+
+td[data-value="bonus-share"] {
+    border-top-color: #f8f9fa;
+}
+
+td[data-value="percent-max"],
+td[data-value="bonus-max"] {
+    display: none;
+}
+
+thead td[data-value="target"],
+thead td[data-value="percent-min"],
+thead td[data-value="bonus-min"] {
+    background-color: blanchedalmond;
+}
+
+tbody tr {
+    height: 25px;
+    line-height: 25px;
+}
+
+div[data-content='dash-scale'] {
+    display: none;
+}
+
+
+/*tbody tr[data-position='1'] {*/
+/*    border: 2px solid red;*/
+/*}*/
+
+/*tbody tr td {*/
+/*    height: 27px;*/
+/*    line-height: 27px;*/
+/*    margin: auto;*/
+/*}*/
+
+
