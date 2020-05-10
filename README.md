@@ -26,6 +26,8 @@ On indicator page i select current period, but it is possible to form table with
 Also on indicator page possible to form forecast data. In this case until current period will be Actual data, after Forecast data.
 
 ##################################################
+
+
 Celery block added.
 Mongoengine block added.
 
