@@ -1,9 +1,11 @@
+import datetime
 from django.shortcuts import render
 from django.http import HttpResponseForbidden
 from .calc_percent_indicator import percent_view_block
 from .calc_turnover_indicator import turnover_view_block
 from .calc_value_indicator import value_view_block
 from .calc_variable_indicator import variable_view_block
+from .tasks import write_form_query_log
 from main.models import  CurrentPeriod
 from dashboard.calc_dashboard import get_indicator_list
 
@@ -26,6 +28,17 @@ def indicator(request, slag, id):
         if request.method == 'POST':
             form = Form(request.POST, indicator=id, year=current_period.year)
             if form.is_valid():
+                # FORM QUERY LOG #############################################
+                log_data = {
+                    'user_id': request.user.id,
+                    'log_time': datetime.datetime.utcnow(),
+                    'form_year': int(form.cleaned_data['year']),
+                    'form_branch': form.cleaned_data['branch'].id,
+                    'form_forecast': int(form.cleaned_data['forecast']),
+                    'form_totals': int(form.cleaned_data['ytd']),
+                }
+                write_form_query_log.delay(log_data)
+                ##############################################################
                 kwargs = {
                     'indicator': id,
                     'branch': form.cleaned_data['branch'].id,
