@@ -24,3 +24,9 @@ To set current period is use CurrentPeriod model.
 On dashboard page indicator is calculating as current period YTD slice.
 On indicator page i select current period, but it is possible to form table with YDT or by month data.
 Also on indicator page possible to form forecast data. In this case until current period will be Actual data, after Forecast data.
+
+##################################################
+Celery block added.
+Mongoengine block added.
+
+Create simple celery task for logging form queries from indicator page.
