@@ -10,4 +10,3 @@ class IndicatorLongDetailView(APIView):
         indicator = Indicator.objects.prefetch_related('report_set', 'scale_set').get(id=id)
         serializer = IndicatorLongDetailSerializer(indicator, context={'id': id, 'year': year})
         return Response(serializer.data)
-S
