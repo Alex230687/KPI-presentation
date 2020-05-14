@@ -32,3 +32,15 @@ Celery block added.
 Mongoengine block added.
 
 Create simple celery task for logging form queries from indicator page.
+
+
+##################################################
+
+
+Dajngo REST block added.
+
+Allow to get detail indicator information by url
+
+host:port/api/indicator/<int:id>-<int:year>/
+127.0.0.1:8000/api/indicator/3-2019/
+
