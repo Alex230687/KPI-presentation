@@ -147,9 +147,11 @@ class Report(models.Model):
     """Main table to create report structure."""
     id = models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)
     indicator = models.ForeignKey(Indicator, on_delete=models.PROTECT)
-    row_code = models.PositiveSmallIntegerField(verbose_name='Row code', blank=True, null=True)
+    # row_code = models.PositiveSmallIntegerField(verbose_name='Row code', blank=True, null=True)
+    row_code = models.ForeignKey(Row, on_delete=models.PROTECT, blank=True, null=True)
     row_position = models.PositiveSmallIntegerField(verbose_name='Row position', blank=True, null=True)
-    org_code = models.PositiveSmallIntegerField(verbose_name='Organization code', blank=True, null=True)
+    # org_code = models.PositiveSmallIntegerField(verbose_name='Organization code', blank=True, null=True)
+    org_code = models.ForeignKey(Organization, on_delete=models.PROTECT, blank=True, null=True)
     numerator = models.PositiveSmallIntegerField(verbose_name='Numerator', blank=True, null=True)
     denominator = models.PositiveSmallIntegerField(verbose_name='Denominator', blank=True, null=True)
     year = models.PositiveSmallIntegerField(verbose_name='Year')
