@@ -1,11 +1,14 @@
 # KPI-presentaion
 
 Python stack:
-python 3.6.5 / django 2.1.7 / django-bootstrap 1.1.1 / django-pandas 0.6.1 / pandas /\n
+python 3.6.5 / django 2.1.7 / django-bootstrap 1.1.1 / django-pandas 0.6.1 / pandas /
 
 Authorization:
+
 admin - admin_main@mail.ru / 1234
+
 user1 - user2@mail.ru / ca4hjzlmsq
+
 user2 - user3@mail.ru / asd123asd
 
 Base KPI project contatins 30 indicators for 25 managers.
@@ -27,16 +30,21 @@ Also on indicator page possible to form forecast data. In this case until curren
 
 ##################################################
 
-
+branch #1
 Celery block added.
 Mongoengine block added.
 
 Create simple celery task for logging form queries from indicator page.
 
 
+branch #3
+Weekly beat task that update database data.
+
+
 ##################################################
 
 
+branch #2
 Dajngo REST block added.
 
 Allow to get detail indicator information by url
