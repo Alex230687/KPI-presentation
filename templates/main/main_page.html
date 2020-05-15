@@ -32,7 +32,7 @@
                     <div data-content="dropdown-row" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         {% if indicator_info %}
                             {% for indicator in indicator_info %}
-                                <a class="dropdown-item" href="{% url 'indicator:indicator' indicator.slag indicator.id %}">{{ indicator.name }}</a>
+                                <a class="dropdown-item" href="{% url 'indicator:indicator' indicator.slug indicator.id %}">{{ indicator.name }}</a>
                             {% endfor %}
                         {% endif %}
                     </div>

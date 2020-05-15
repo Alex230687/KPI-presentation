@@ -4,5 +4,5 @@ from .views import indicator
 
 app_name = 'indicator'
 urlpatterns = [
-    path('<str:slag>/<int:id>/', indicator, name='indicator'),
+    path('<str:slug>/<int:id>/', indicator, name='indicator'),
 ]
