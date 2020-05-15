@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.PositiveSmallIntegerField(primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100, verbose_name='Name')),
-                ('slag', models.SlugField(max_length=20, verbose_name='Sort name')),
+                ('slug', models.SlugField(max_length=20, verbose_name='Sort name')),
             ],
         ),
         migrations.CreateModel(
@@ -106,12 +106,19 @@ class Migration(migrations.Migration):
             name='Report',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('row_code', models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Row code')),
-                ('org_code', models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Organization code')),
+                # ('row_code', models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Row code')),
+                # ('org_code', models.PositiveSmallIntegerField(blank=True, null=True,
+                #                                               verbose_name='Organization code')),
+                ('row_code', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                  related_name='row_rel', to='main.Row')),
+                ('org_code', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                  related_name='org_rel', to='main.Organization')),
+
                 ('numerator', models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Numerator')),
                 ('denominator', models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Denominator')),
                 ('year', models.PositiveSmallIntegerField(verbose_name='Year')),
                 ('indicator', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='main.Indicator')),
+                ('row_position', models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Row position')),
             ],
         ),
         migrations.CreateModel(

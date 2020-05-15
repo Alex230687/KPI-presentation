@@ -27,7 +27,7 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                         {% if indicator_info %}
                                             {% for indicator in indicator_info %}
-                                                <a class="dropdown-item" href="{% url 'indicator:indicator' indicator.slag indicator.pk %}">{{ indicator.name }}</a>
+                                                <a class="dropdown-item" href="{% url 'indicator:indicator' indicator.slug indicator.pk %}">{{ indicator.name }}</a>
                                             {% endfor %}
                                         {% endif %}
                                     </div>

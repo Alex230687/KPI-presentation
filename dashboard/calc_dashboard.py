@@ -30,7 +30,7 @@ class DashQueryManager:
 
     def indicator_query(self, kwargs):
         RF = ('indicator_effect', 'indicator_group')
-        VF = ('id', 'name', 'slag', 'indicator_effect__name', 'indicator_group__name')
+        VF = ('id', 'name', 'slug', 'indicator_effect__name', 'indicator_group__name')
         if self.query['indicator'] is None:
             self.query['indicator'] = Indicator.objects.filter(id=kwargs['indicator']) \
                 .select_related(*RF).values(*VF)[0]

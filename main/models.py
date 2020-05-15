@@ -140,7 +140,7 @@ class Indicator(models.Model):
     name = models.CharField(verbose_name='Name', max_length=100)
     indicator_group = models.ForeignKey(IndicatorGroup, on_delete=models.PROTECT)
     indicator_effect = models.ForeignKey(IndicatorEffect, on_delete=models.PROTECT)
-    slag = models.SlugField(verbose_name='Sort name', max_length=20)
+    slug = models.SlugField(verbose_name='Sort name', max_length=20)
 
 
 class Report(models.Model):
@@ -148,10 +148,10 @@ class Report(models.Model):
     id = models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)
     indicator = models.ForeignKey(Indicator, on_delete=models.PROTECT)
     # row_code = models.PositiveSmallIntegerField(verbose_name='Row code', blank=True, null=True)
-    row_code = models.ForeignKey(Row, on_delete=models.PROTECT, blank=True, null=True)
+    row_code = models.ForeignKey(Row, on_delete=models.PROTECT, blank=True, null=True, related_name='row_rel')
     row_position = models.PositiveSmallIntegerField(verbose_name='Row position', blank=True, null=True)
     # org_code = models.PositiveSmallIntegerField(verbose_name='Organization code', blank=True, null=True)
-    org_code = models.ForeignKey(Organization, on_delete=models.PROTECT, blank=True, null=True)
+    org_code = models.ForeignKey(Organization, on_delete=models.PROTECT, blank=True, null=True, related_name='org_rel')
     numerator = models.PositiveSmallIntegerField(verbose_name='Numerator', blank=True, null=True)
     denominator = models.PositiveSmallIntegerField(verbose_name='Denominator', blank=True, null=True)
     year = models.PositiveSmallIntegerField(verbose_name='Year')

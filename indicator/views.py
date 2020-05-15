@@ -18,13 +18,13 @@ calc_block = {
 }
 
 
-def indicator(request, slag, id):
+def indicator(request, slug, id):
     current_period = CurrentPeriod.objects.all().first()
     indicator_list = get_indicator_list(request.user.id, current_period.year)
     if id in indicator_list or request.user.is_staff:
-        Form = calc_block[slag]['form']
-        Controller = calc_block[slag]['controller']
-        managers = calc_block[slag]['managers']
+        Form = calc_block[slug]['form']
+        Controller = calc_block[slug]['controller']
+        managers = calc_block[slug]['managers']
         if request.method == 'POST':
             form = Form(request.POST, indicator=id, year=current_period.year)
             if form.is_valid():
