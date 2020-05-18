@@ -1,25 +1,30 @@
 import datetime
+
 from pandas import Series
 from django_pandas.io import read_frame
-from main.models import Report, Data
+
 from .calc_basic import BaseQueryManager, BaseDataManager, BaseController
 from .calc_percent_indicator import PercentRowManager
 from .forms import TurnoverForm
+from main.models import Report, Data
 
 
 class TurnoverQueryManager(BaseQueryManager):
+    """Manager creates all necessary subqueries."""
     def __init__(self):
         super().__init__()
         self.query.update(dict.fromkeys(['numerator', 'denominator']))
         self.manager_chain.extend([self.numerator_query, self.denominator_query])
 
     def numerator_query(self, kwargs):
+        """Get numerator row list for current indicator."""
         if self.query['numerator'] is None:
             self.query['numerator'] = Report.objects.filter(
                 indicator=kwargs['indicator'], year=kwargs['year'], numerator__isnull=False
                 ).values_list('row_code', flat=True)
 
     def denominator_query(self, kwargs):
+        """Get denominator row list for current indicator."""
         if self.query['denominator'] is None:
             self.query['denominator'] = Report.objects.filter(
                 indicator=kwargs['indicator'], year=kwargs['year'], denominator__isnull=False
@@ -45,11 +50,13 @@ class TurnoverDataManager(BaseDataManager):
 
 
 class TurnoverRowManager(PercentRowManager):
+    """Manager create data block for current indicator."""
     def __init__(self):
         super().__init__()
         self.sub_implementation_block = {}
 
     def result_handler(self, sub_context_block, kwargs, subquery):
+        """Method for monthly or cumulative values representation."""
         for data_type in subquery['forecast']:
             if kwargs['result'] == 1:
                 sub_context_block[data_type]['value'] = self.sub_result_handler(
@@ -86,6 +93,7 @@ class TurnoverRowManager(PercentRowManager):
             return datetime.date(date.year, 1, 1)
 
     def run_row_manager(self, df_block, kwargs, subquery):
+        """Main RowManager method. Use to get indicator table data."""
         self.context_handler(df_block, kwargs, subquery)
         self.indicator_handler(df_block, kwargs, subquery)
         self.implementation_handler()
@@ -95,6 +103,7 @@ class TurnoverController(BaseController):
     pass
 
 
+# controller block
 turnover_view_block = {
     'controller': TurnoverController,
     'managers': {

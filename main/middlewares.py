@@ -1,9 +1,11 @@
 from django.contrib.auth.models import AnonymousUser
+
 from .models import CurrentPeriod
 from .utilities import get_indicator_info
 
 
 def indicator_list_for_navbar(request):
+    """Middlewate create current user indicator links for navbar."""
     context = {}
     # if request.user.__class__ is not AnonymousUser:
     if request.user.is_authenticated:

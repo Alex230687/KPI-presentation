@@ -1,13 +1,17 @@
 from copy import deepcopy
 from pandas import Series
+
 from django_pandas.io import read_frame
-from main.models import Data, Row
+
 from .calc_basic import BaseQueryManager, BaseDataManager, BaseController
 from .calc_value_indicator import ValueRowManager
 from .forms import BaseForm
+from main.models import Data, Row
 
 
 class VariableQueryManager(BaseQueryManager):
+    """Manager creates all necessary subqueries."""
+    # Revenue rows id
     REVENUE = [10, 20, 30, 40, 50]
 
     def __init__(self):
@@ -16,20 +20,24 @@ class VariableQueryManager(BaseQueryManager):
         self.additional_chain = [self.fixed_query, self.variable_query, self.revenue_query]
 
     def fixed_query(self):
+        """Get fixed type row list for current indicator."""
         if self.query['fixed'] is None and self.query['row']:
             self.query['fixed'] = Row.objects.filter(id__in=self.query['row'], row_type__name='fixed') \
                 .values_list('id', flat=True)
 
     def variable_query(self):
+        """Get variable type row list for current indicator."""
         if self.query['variable'] is None and self.query['row']:
             self.query['variable'] = Row.objects.filter(id__in=self.query['row'], row_type__name='variable') \
                 .values_list('id', flat=True)
 
     def revenue_query(self):
+        """Get revenue row list."""
         if self.query['revenue'] is None:
             self.query['revenue'] = Row.objects.filter(id__in=self.REVENUE).values_list('id', flat=True)
 
     def run_query_manager(self, kwargs):
+        """Main QueryManager method. Use to run query block."""
         for method in self.manager_chain:
             method(kwargs)
         for additional_method in self.additional_chain:
@@ -37,11 +45,13 @@ class VariableQueryManager(BaseQueryManager):
 
 
 class VariableDataManager(BaseDataManager):
+    """Manager create data block for current indicator."""
     def __init__(self):
         super().__init__()
         self.revenue_data = None
 
     def revenue_handler(self, kwargs, subquery):
+        """Convert Revenue data into pandas.DataFrame object."""
         revenue = Data.objects.filter(
             row__in=subquery['revenue'], org__in=subquery['branch'], period__year=kwargs['year'],
             data_type__name__in=subquery['forecast']
@@ -50,12 +60,14 @@ class VariableDataManager(BaseDataManager):
 
 
 class VariableRowManager(ValueRowManager):
+    """Manager create data block for current indicator."""
     def __init__(self):
         super().__init__()
         self.revenue_context = {}
         self.sub_indicator_block = {}
 
     def revenue_row_handler(self, revenue_block, kwargs, subquery):
+        """Handler create revenue context data block."""
         if not revenue_block.empty:
             sub_revenue_context = {}
             for data_type in subquery['forecast']:
@@ -67,6 +79,7 @@ class VariableRowManager(ValueRowManager):
             self.revenue_context['revenue'] = sub_revenue_context
 
     def revenue_implementation_handler(self):
+        """Handler calculate revenue implementation."""
         if self.revenue_context:
             try:
                 self.revenue_context['implementation'] = self.revenue_context['revenue']['Actual']['value'] /\
@@ -75,6 +88,7 @@ class VariableRowManager(ValueRowManager):
                 self.revenue_context['implementation'] = Series([0 for i in range(12)])
 
     def variable_handler(self):
+        """Handler adjust variable type rows by revenue implementation percent."""
         if self.context_block and self.revenue_context:
             for sub_context in self.context_block.keys():
                 for data_type in self.context_block[sub_context].keys():
@@ -87,6 +101,7 @@ class VariableRowManager(ValueRowManager):
                             (1 + (adjustment - 1))
 
     def sub_indicator_handler(self, df_block, kwargs, subquery):
+        """Sub method for indicator values calculation."""
         if not df_block.empty:
             for row_type in ('fixed', 'variable'):
                 sub_indicator_context = {}
@@ -100,6 +115,7 @@ class VariableRowManager(ValueRowManager):
                 self.sub_indicator_block[row_type] = sub_indicator_context
 
     def indicator_handler(self, *args, **kwargs):
+        """Calculate indicator row values."""
         if self.revenue_context and self.sub_indicator_block:
             self.indicator_block['Actual'] = {'value': None}
             self.indicator_block['Actual']['value'] = self.sub_indicator_block['fixed']['Actual']['value'] +\
@@ -111,6 +127,7 @@ class VariableRowManager(ValueRowManager):
                 self.sub_indicator_block['variable']['Budget']['value'] * (1 + (adjustment - 1))
 
     def run_row_manager(self, df_block, kwargs, subquery, revenue_block=None):
+        """Main RowManager method. Use to get indicator table data."""
         self.revenue_row_handler(revenue_block, kwargs, subquery)
         self.revenue_implementation_handler()
         self.context_handler(df_block, kwargs, subquery)
@@ -121,19 +138,24 @@ class VariableRowManager(ValueRowManager):
 
 
 class VariableController(BaseController):
+    """Indicator data handler."""
     def create_data(self):
+        """Run DataManger block."""
         if self.data_manager is None:
             self.data_manager = self.managers['data_manager']()
             self.data_manager.run_data_manager(self.kwargs, self.query_manager.query)
+            # Revenue block added
             self.data_manager.revenue_handler(self.kwargs, self.query_manager.query)
 
     def create_row(self):
+        """Run RowManger block."""
         if self.row_manager is None:
             self.row_manager = self.managers['row_manager']()
             self.row_manager.run_row_manager(self.data_manager.data, self.kwargs, self.query_manager.query,
                                              self.data_manager.revenue_data)
 
 
+# controller block
 variable_view_block = {
     'controller': VariableController,
     'managers': {

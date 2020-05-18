@@ -14,7 +14,7 @@ from main.models import (
 
 
 class AccountSerializer(serializers.ModelSerializer):
-    """User info."""
+    """Account model serializer."""
 
     class Meta:
         model = Account
@@ -22,13 +22,19 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class FilterScaleAccountSerializer(serializers.ListSerializer):
+    """Filter select unique accounts."""
     def to_representation(self, data):
         data = data.filter(year=self.context['year'], row_position=1)
         return super().to_representation(data)
 
 
 class ScaleSerializer(serializers.ModelSerializer):
-    """Scale info."""
+    """
+    Scale model serializer.
+    Nested serializer for Account model.
+    Serializer connects Indicator model and Account model.
+    Filter select only unique related accounts.
+    """
     account = AccountSerializer(read_only=True)
 
     class Meta:
@@ -38,35 +44,38 @@ class ScaleSerializer(serializers.ModelSerializer):
 
 
 class RowTypeSerializer(serializers.ModelSerializer):
-    """Row type info."""
+    """RowType model serializer."""
     class Meta:
         model = RowType
         fields = ('name',)
 
 
 class RowGroup1Serializer(serializers.ModelSerializer):
-    """Row group #1 info."""
+    """RowGroup1 model serializer."""
     class Meta:
         model = RowGroup1
         fields = ('name',)
 
 
 class RowGroup2Serializer(serializers.ModelSerializer):
-    """Row group #2 info."""
+    """RowGroup2 model serializer."""
     class Meta:
         model = RowGroup2
         fields = ('name',)
 
 
 class RowGroup3Serializer(serializers.ModelSerializer):
-    """Row group #3 info."""
+    """RowGroup3 model serializer."""
     class Meta:
         model = RowGroup3
         fields = ('name',)
 
 
 class RowSerializer(serializers.ModelSerializer):
-    """Detailed row information."""
+    """
+    Row model serializer.
+    Nested serializers for RowType, RowGroup1, RowGroup2, RowGroup3 serializers.
+    """
     row_type = RowTypeSerializer(read_only=True)
     row_group1 = RowGroup1Serializer(read_only=True)
     row_group2 = RowGroup2Serializer(read_only=True)
@@ -78,13 +87,21 @@ class RowSerializer(serializers.ModelSerializer):
 
 
 class FilterReportRowSerializer(serializers.ListSerializer):
+    """
+    Filter Report model by <year> and <row_code> field.
+    Filter(year=year and row_code__isnull=False).
+    """
     def to_representation(self, data):
         data = data.filter(row_code__isnull=False, year=self.context['year'])
         return super().to_representation(data)
 
 
 class ReportSerializer(serializers.ModelSerializer):
-    """Indicator report serializer."""
+    """
+    Report model serializer.
+    Nested field for Row model serializer.
+    Filter select rows by <year> and <row_code> fields.
+    """
     row_code = RowSerializer(read_only=True)
 
     class Meta:
@@ -94,7 +111,12 @@ class ReportSerializer(serializers.ModelSerializer):
 
 
 class IndicatorLongDetailSerializer(serializers.ModelSerializer):
-    """View selected indicator info."""
+    """
+    Indicator model serializer.
+    Nested fields for Report and Scale model serializers.
+
+    Get extra args as context dict. {'id': int, 'year': int}.
+    """
     report_set = ReportSerializer(many=True)
     scale_set = ScaleSerializer(many=True)
 

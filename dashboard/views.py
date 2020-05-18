@@ -1,12 +1,16 @@
 from django.shortcuts import render
 from django.http import HttpResponseForbidden
+
 from .calc_dashboard import DashController, managers, get_indicator_list
 from main.models import Account, CurrentPeriod
 
 
 def dash(request, id):
+    """View information for current user or staff users."""
     if id == request.user.id or request.user.is_staff:
+        # get current period
         current_period = CurrentPeriod.objects.first()
+        # get indicator list for current user
         indicator_list = get_indicator_list(id, current_period.year)
         kwargs_list = []
         for indicator in indicator_list:
@@ -22,6 +26,7 @@ def dash(request, id):
             'current_period': current_period.period,
             'dash_data': {}
             }
+        # Rub dashboard calculator controller for each indicator in indicator list
         for kwargs in kwargs_list:
             dash_data = DashController(kwargs, managers)
             dash_data.run_controller()

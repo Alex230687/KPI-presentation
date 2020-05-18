@@ -1,4 +1,5 @@
 from pandas import Series
+
 from .calc_basic import BaseDataManager, BaseController, BaseQueryManager
 from .calc_value_indicator import ValueRowManager
 from .forms import BaseForm
@@ -13,7 +14,9 @@ class PercentDataManager(BaseDataManager):
 
 
 class PercentRowManager(ValueRowManager):
+    """Manager create necessary table information for indicator."""
     def indicator_handler(self, df_block, kwargs, subquery):
+        """Calculate indicator row values."""
         position_block = {}
         for position in self.POSITION:
             sub_position_block = {}
@@ -27,6 +30,7 @@ class PercentRowManager(ValueRowManager):
         self.sub_indicator_handler(position_block)
 
     def sub_indicator_handler(self, position_block):
+        """Sub method for indicator values calculation."""
         for data_type in self.DATA_TYPE:
             self.indicator_block[data_type] = {'value': None}
             try:
@@ -40,6 +44,7 @@ class PercentController(BaseController):
     pass
 
 
+# controller block
 percent_view_block = {
     'controller': PercentController,
     'managers': {

@@ -5,6 +5,7 @@ mongoengine.connect('logdb')
 
 
 class FormQueryLog(mongoengine.Document):
+    """MongoDB model for logs."""
     user_id = mongoengine.IntField()
     log_time = mongoengine.DateTimeField()
     form_year = mongoengine.IntField()

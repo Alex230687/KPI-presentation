@@ -15,4 +15,3 @@ class AccountLogin(LoginView):
 
 class AccountLogout(LoginRequiredMixin, LogoutView):
     template_name = 'main/logout_page.html'
-# CELERY BLOCK TEST

@@ -1,4 +1,5 @@
 from django import forms
+
 from main.models import Report, Organization, CurrentPeriod
 
 
@@ -11,6 +12,7 @@ class BaseForm(forms.Form):
         year = kwargs.pop('year')
         super().__init__(*args, **kwargs)
 
+        # Special subquery to select only branches for current indicator.
         subquery = Report.objects.filter(indicator__id=indicator, year=year, org_code__isnull=False) \
             .values_list('org_code', flat=True)
         self.fields['branch'] = forms.ModelChoiceField(
@@ -23,4 +25,5 @@ class BaseForm(forms.Form):
 
 
 class TurnoverForm(BaseForm):
+    """For turnover indicator change <year> to <avr year>."""
     ytd = forms.ChoiceField(choices=[(0, 'Месяц'), (1, 'Среднегодовые')], label='Итоги')
