@@ -24,7 +24,7 @@ urlpatterns = [
     path('indicator/', include('indicator.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('admin/', admin.site.urls),
-    path('', include('main.urls')),
+    path('main/', include('main.urls')),
 ]
 
 
