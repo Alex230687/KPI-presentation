@@ -52,3 +52,12 @@ Allow to get detail indicator information by url
 host:port/api/indicator/<int:id>-<int:year>/
 127.0.0.1:8000/api/indicator/3-2019/
 
+
+##################################################
+
+branch #4
+
+Cache block added.
+For dashboard app cache page for 1 week.
+For indicator app cache only large controller object
+
