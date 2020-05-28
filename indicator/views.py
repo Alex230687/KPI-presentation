@@ -2,6 +2,9 @@ import datetime
 
 from django.shortcuts import render
 from django.http import HttpResponseForbidden
+from django.core.cache import cache
+# from django.views.decorators.cache import cache_page
+# from django.views.decorators.vary import vary_on_headers
 
 from .calc_percent_indicator import percent_view_block
 from .calc_turnover_indicator import turnover_view_block
@@ -21,6 +24,23 @@ calc_block = {
 }
 
 
+def get_or_set_cached_object(kwargs, Controller, managers):
+    """
+    Function return controller object to create context block for template.
+    1. Generate cache_key for current form-request data
+        Example: Ebitda Moscow 2019 YTD No-forecast -> 'i-1-b-1-y-2019-t-1-f-0'
+    2. If key in Memcached > get object > else create new controller
+    """
+    cache_key = 'i-%(indicator)s-b-%(branch)s-y-%(year)s-t-%(result)s-f-%(forecast)s' % (kwargs)
+    if cache.has_key(cache_key):
+        controller = cache.get(cache_key)
+    else:
+        controller = Controller(kwargs, managers)
+        controller.run_controller()
+        cache.set(cache_key, controller)
+    return controller
+
+
 def indicator(request, slug, id):
     """
     View indicator table.
@@ -36,7 +56,6 @@ def indicator(request, slug, id):
         if request.method == 'POST':
             form = Form(request.POST, indicator=id, year=current_period.year)
             if form.is_valid():
-
                 # FORM QUERY LOG #############################################
                 log_data = {
                     'user_id': request.user.id,
@@ -57,8 +76,11 @@ def indicator(request, slug, id):
                     'forecast': int(form.cleaned_data['forecast']),
                     'period': current_period.period
                 }
-                controller = Controller(kwargs, managers)
-                controller.run_controller()
+
+                # GET CACHED OBJECT OR CREATE NEW CACHED OBJECT
+                controller = get_or_set_cached_object(kwargs, Controller, managers)
+                ################################################
+
                 context = {
                     'form': form,
                     'kwargs': kwargs,
