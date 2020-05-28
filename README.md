@@ -1,7 +1,6 @@
 # KPI-presentaion
 
-Python stack:
-python 3.6.5 / django 2.1.7 / django-bootstrap 1.1.1 / django-pandas 0.6.1 / pandas /
+Python -> requirements.txt
 
 Authorization:
 
