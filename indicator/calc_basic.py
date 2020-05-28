@@ -72,7 +72,7 @@ class BaseDataManager:
     # RF - <Select_related> fields
     # VF - <Values> fields
     REPORT_RF = ('indicator', 'indicator__indicator_group', 'indicator__indicator_effect')
-    REPORT_VF = ('row_code', 'indicator__id', 'row_position', 'numerator', 'denominator')
+    REPORT_VF = ('row_code__id', 'indicator__id', 'row_position', 'numerator', 'denominator')
     DATA_RF = ('row', 'data_type', 'row__row_type', 'row__row_group1', 'row__row_group2', 'row__row_group3')
     DATA_VF = ('row__id', 'row__name', 'period', 'value', 'row__row_type__name', 'row__row_group1__name',
                'row__row_group2__name', 'row__row_group3__name', 'data_type__name')
@@ -100,7 +100,7 @@ class BaseDataManager:
         if self.data is None:
             report_df = self.report_handler(kwargs)
             data_df = self.data_handler(kwargs, subquery)
-            self.data = data_df.merge(report_df, how='left', left_on='row__id', right_on='row_code') \
+            self.data = data_df.merge(report_df, how='left', left_on='row__id', right_on='row_code__id') \
                 .sort_values(by=['row_position', 'period'], ascending=True)
 
 

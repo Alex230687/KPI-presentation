@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponseForbidden
+from django.views.decorators.cache import cache_page
 
 from .calc_dashboard import DashController, managers, get_indicator_list
 from main.models import Account, CurrentPeriod
 
 
+@cache_page(604800, cache='big_data')
 def dash(request, id):
     """View information for current user or staff users."""
     if id == request.user.id or request.user.is_staff:

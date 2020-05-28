@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django.contrib.sessions.models import Session
 from .models import Account
 
 
@@ -31,3 +32,15 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Account, AccountAdmin)
+
+
+class SessionAdmin(admin.ModelAdmin):
+    def _session_data(self, session):
+        ses_dict = session.get_decoded()
+        user_id = ses_dict['_auth_user_id']
+        user = Account.objects.get(id=user_id)
+        return user.email
+    list_display = ['session_key', 'expire_date', '_session_data']
+
+
+admin.site.register(Session, SessionAdmin)
